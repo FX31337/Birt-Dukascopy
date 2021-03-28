@@ -119,7 +119,7 @@ foreach ($download as $symbol)
 
                         if (saveBinary($fileToDownload, $result))
                         {
-                            logger($dukascopyUrl . ' downloaded ' . mb_strlen($result, '8bit') . ' bytes'));
+                            logger($dukascopyUrl . ' downloaded ' . mb_strlen($result, '8bit') . ' bytes');
                         }
                         else
                         {
@@ -144,7 +144,7 @@ foreach ($download as $symbol)
         else
         {
             $currentDateTimeToSkip = clone $currentDateTime;
-            $currentDateTimeToSkip->modify('-' . $daysToSkip . ' day');
+            $currentDateTimeToSkip->modify('-' . min(30, $daysToSkip) . ' day');
             $relativePathToSkip   = getRelativePath($symbol, $currentDateTimeToSkip);
             $fileToDownloadToSkip = __DIR__ . DIRECTORY_SEPARATOR . $relativePathToSkip;
 
