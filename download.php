@@ -12,7 +12,7 @@
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'functions.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'symbols.php';
 
-// Symbols to download, to download all just: $download = array_keys($symbols);
+// Symbols to download, to download all just: $download = $symbols;
 $download = [
     'ESPIDXEUR',
     'DEUIDXEUR',
@@ -35,7 +35,7 @@ $curlOptions = [
 
 foreach ($download as $symbol)
 {
-    if (!isset($symbols[$symbol]))
+    if (!in_array($symbol, $symbols))
     {
         logger('The symbol ' . $symbol . ' is not in the available list');
 
