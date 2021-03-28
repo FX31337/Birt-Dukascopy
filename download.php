@@ -9,102 +9,121 @@
  */
 
 // Yeah I know, this is a bullshit but I don't want to waste thousand lines just for 1 best practice
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'functions.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'symbols.php';
 
 // Symbols to download, to download all just: $download = array_keys($symbols);
 $download = [
     'ESPIDXEUR',
+    'DEUIDXEUR',
+    'AUDUSD',
+    'EURUSD',
+    'GBPJPY',
+    'GBPUSD',
+    'USDCAD',
+    'USDCHF',
+    'USDJPY',
+    'XAUUSD',
+];
+
+$curlOptions = [
+    CURLOPT_BINARYTRANSFER => true,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HEADER         => false,
 ];
 
 foreach ($download as $symbol)
 {
     if (!isset($symbols[$symbol]))
     {
-        logger('The symbol ' . $symbol . ' is not in the available list.');
+        logger('The symbol ' . $symbol . ' is not in the available list');
 
         continue;
     }
 
-    $symbols[$symbol] = time() - 3600 * 24 * 8;
+    $maxNotFoundFiles     = 100;
+    $maxEmptyFiles        = 100;
+    $downloadDirectory    = '';
+    $notFoundFiles        = 0;
+    $downloadedEmptyFiles = 0;
+    $daysToSkip           = 1;
+    $currentDateTime      = new \DateTime('now', new \DateTimeZone('UTC'));
+    logger('Downloading ' . $symbol . '...');
 
-    $tickStart  = $symbols[$symbol] - ($symbols[$symbol] % 3600);
-    $tickFinish = time();
-
-    logger('Downloading ' . $symbol . ' starting with ' . gmstrftime('%y-%m-%d %H:%M:%S', $tickStart));
-
-    for ($tick = $tickStart; $tick < $tickFinish; $tick += 3600)
+    while ($maxNotFoundFiles > $notFoundFiles && $maxEmptyFiles > $downloadedEmptyFiles && 1970 < $currentDateTime->format('Y'))
     {
-        $year         = gmstrftime('%Y', $tick);
-        $month        = str_pad(gmstrftime('%m', $tick) - 1, 2, '0', STR_PAD_LEFT);
-        $day          = gmstrftime('%d', $tick);
-        $hour         = gmstrftime('%H', $tick);
-        $url          = 'http://www.dukascopy.com/datafeed/' . $symbol . '/' . $year . '/' . $month . '/' . $day . '/' . $hour . 'h_ticks.bi5';
-        $localPath    = $symbol . '/' . $year . '/' . $month . '/' . $day;
-        $localFileBin = $localPath . '/' . $hour . 'h_ticks.bin';
-        $localFileBi5 = $localPath . '/' . $hour . 'h_ticks.bi5';
+        $currentDateTime->modify('-1 hour');
+        $relativePath   = getRelativePath($symbol, $currentDateTime);
+        $fileToDownload = __DIR__ . DIRECTORY_SEPARATOR . $relativePath;
+        $dukascopyUrl   = 'http://www.dukascopy.com/datafeed/' . $relativePath;
 
-        logger('Processing ' . $symbol . ' ' . $tick . ' - ' . gmstrftime('%y-%m-%d %H:%M:%S', $tick) . ' --- ' . $url);
-
-        if (!file_exists($localPath))
+        if ($downloadDirectory != dirname($fileToDownload))
         {
-            mkdir($localPath, 0777, true);
+            $downloadDirectory = dirname($fileToDownload);
+
+            if (!file_exists($downloadDirectory))
+            {
+                mkdir($downloadDirectory, 0777, true);
+            }
         }
 
-        if (!file_exists($localFileBi5) && !file_exists($localFileBin))
+        if (!is_file($fileToDownload))
         {
-            $ch      = false;
-            $retries = 0;
+            $curl    = false;
+            $retry   = 0;
+            $retries = 10;
 
             do
             {
-                if ($ch !== FALSE)
+                if (false !== $curl)
                 {
-                    curl_close($ch);
+                    curl_close($curl);
                 }
 
-                $ch = curl_init($url);
-                curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_HEADER, 0);
-                $result = curl_exec($ch);
-                $retries++;
-            }
-            while ($retries <= 3 && curl_errno($ch));
+                $curl = curl_init($dukascopyUrl);
+                curl_setopt_array($curl, $curlOptions);
+                $result = curl_exec($curl);
+                $retry++;
 
-            if (curl_errno($ch))
+                if (1 < $retry)
+                {
+                    sleep(1);
+                }
+
+            }
+            while ($retry <= $retries && curl_errno($curl));
+
+            if (curl_errno($curl))
             {
-                logger('Couldn\'t download ' . $url);
-                logger('Error was: ' . curl_error($ch));
+                logger('Couldn\'t download ' . $dukascopyUrl);
+                logger('Error was: ' . curl_error($curl));
 
                 exit(1);
             }
             else
             {
-                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
                 switch ($httpCode) 
                 {
                     case 404:
-                        if (isWeekend($tick))
-                        {
-                            logger('Missing weekend file ' . $url);
-                        }
-                        else
-                        {
-                            logger('Missing workday file ' . $url);
-                        }
-
+                        $notFoundFiles++;
+                        logger($dukascopyUrl . ' Not Found');
+                        
                         break;
 
                     case 200:
-                        if (saveBinary($localFileBi5, $result))
+                        $notFoundFiles        = 0;
+                        $downloadedEmptyFiles = empty($result) ? $downloadedEmptyFiles + 1 : 0;
+
+                        if (saveBinary($fileToDownload, $result))
                         {
-                            logger('Successfully downloaded ' . $url);
+                            logger($dukascopyUrl . ' downloaded ' . mb_strlen($result, '8bit') . ' bytes'));
                         }
                         else
                         {
-                            logger('Couldn\'t open ' . $binaryFile);
+                            logger('Couldn\'t open ' . $fileToDownload);
 
                             exit(1);
                         }
@@ -112,7 +131,7 @@ foreach ($download as $symbol)
                         break;
 
                     default:
-                        logger('Error when downloading ' . $url);
+                        logger('Error when downloading ' . $dukascopyUrl);
                         logger('HTTP code was: ' . $httpCode);
                         logger('Content was: ' . $result);
 
@@ -120,64 +139,22 @@ foreach ($download as $symbol)
                 }
             }
 
-            curl_close($ch);
+            curl_close($curl);
         }
         else
         {
-            logger('Skipping ' . $url . ', local file already exists.');
+            $currentDateTimeToSkip = clone $currentDateTime;
+            $currentDateTimeToSkip->modify('-' . $daysToSkip . ' day');
+            $relativePathToSkip   = getRelativePath($symbol, $currentDateTimeToSkip);
+            $fileToDownloadToSkip = __DIR__ . DIRECTORY_SEPARATOR . $relativePathToSkip;
+
+            if (is_file($fileToDownloadToSkip))
+            {
+                $daysToSkip++;
+                $currentDateTime = $currentDateTimeToSkip;
+            }
+
+            logger($dukascopyUrl . ' skipped, local file already exists');
         }
     }
-}
-
-/**
- * @param string $message The message to show in console and store in the log
- */
-function logger(string $message): void
-{
-    static $logFile = false;
-
-    $timestamp = date('Y-m-d H:i:s');
-    $logEntry  = sprintf('[%s] %s%s', $timestamp, $message, PHP_EOL);
-
-    if (!$logFile)
-    {
-        $logFile = __DIR__ . DIRECTORY_SEPARATOR . 'download.log';
-        file_put_contents($logFile, "[$timestamp] Script started." . PHP_EOL);
-    }
-
-    echo $logEntry;
-    error_log($logEntry, 3, $logFile);
-}
-
-/**
- * @param int $timestap Unix timestamp to check the day of the week
- *
- * @return bool true if is a weekend day or false if not
- */
-function isWeekend(int $timestamp): bool
-{
-    $day = mb_strtolower(gmstrftime('%a', $timestamp));
-
-    return 'sun' == $day || 'sat' == $day;
-}
-
-/**
- * @param string $binaryFile    The file to store the binary content
- * @param string $binaryContent The content itself
- *
- * @return bool true if the content was store successfully or false if not
- */
-function saveBinary(string $binaryFile, string $binaryContent): bool
-{
-    $handler = fopen($binaryFile, 'wb');
-
-    if (false === $handler)
-    {
-        return false;
-    }
-
-    fwrite($handler, $binaryContent);
-    fclose($handler);
-
-    return true;
 }
