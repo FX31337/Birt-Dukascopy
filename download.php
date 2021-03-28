@@ -42,6 +42,13 @@ foreach ($download as $symbol)
         continue;
     }
 
+    if (is_file('.done-' . $symbol))
+    {
+        logger('The symbol ' . $symbol . ' is already full downloaded');
+
+        continue;
+    }
+
     $maxNotFoundFiles     = 100;
     $maxEmptyFiles        = 100;
     $downloadDirectory    = '';
@@ -157,4 +164,7 @@ foreach ($download as $symbol)
             logger($dukascopyUrl . ' skipped, local file already exists');
         }
     }
+
+    logger('Downloading ' . $symbol . ' completed');
+    touch('.done-' . $symbol);
 }
