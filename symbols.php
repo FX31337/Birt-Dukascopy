@@ -15,7 +15,7 @@ $symbols = [
     'E_DJE50XX'   => 1326988800, // Europe 50 starting from 2012.01.19 16:00
     'E_CAAC40'    => 1326988800, // France 40 starting from 2012.01.19 16:00
     'E_Futsee100' => 1326988800, // UK 100 starting from 2012.01.19 16:00
-    'E_DAAX'      => 1326988800, // Germany 30 starting from 2012.01.19 16:00
+    'DEUIDXEUR'   => 1326988800, // Germany 30 starting from 2012.01.19 16:00
     'E_SWMI'      => 1326988800, // Switzerland 20 starting from 2012.01.19 16:00
     'ESPIDXEUR'   => 1325487631, // Spain 35 starting from 2012.01.02 08:00
 
