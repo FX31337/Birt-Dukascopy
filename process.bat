@@ -1,35 +1,35 @@
-php process_dukascopy_data.php GBPUSD 200703 201501 GBPUSD.csv
-php process_dukascopy_data.php USDCAD 200703 201501 USDCAD.csv
-php process_dukascopy_data.php USDJPY 200703 201501 USDJPY.csv
-php process_dukascopy_data.php USDCHF 200703 201501 USDCHF.csv
-php process_dukascopy_data.php EURUSD 200703 201501 EURUSD.csv
-php process_dukascopy_data.php USDSEK 200809 201501 USDSEK.csv
-php process_dukascopy_data.php USDNOK 200809 201501 USDNOK.csv
-php process_dukascopy_data.php NZDUSD 200703 201501 NZDUSD.csv
-php process_dukascopy_data.php EURSEK 200703 201501 EURSEK.csv
-php process_dukascopy_data.php EURNOK 200703 201501 EURNOK.csv
-php process_dukascopy_data.php EURCAD 200809 201501 EURCAD.csv
-php process_dukascopy_data.php EURAUD 200703 201501 EURAUD.csv
-php process_dukascopy_data.php CHFJPY 200703 201501 CHFJPY.csv
-php process_dukascopy_data.php CADJPY 200703 201501 CADJPY.csv
-php process_dukascopy_data.php AUDUSD 200703 201501 AUDUSD.csv
-php process_dukascopy_data.php GBPJPY 200703 201501 GBPJPY.csv
-php process_dukascopy_data.php GBPCHF 200703 201501 GBPCHF.csv
-php process_dukascopy_data.php EURJPY 200703 201501 EURJPY.csv
-php process_dukascopy_data.php EURGBP 200703 201501 EURGBP.csv
-php process_dukascopy_data.php EURCHF 200703 201501 EURCHF.csv
-php process_dukascopy_data.php AUDNZD 200812 201501 AUDNZD.csv
-php process_dukascopy_data.php AUDJPY 200703 201501 AUDJPY.csv
-php process_dukascopy_data.php USDSGD 200809 201501 USDSGD.csv
-php process_dukascopy_data.php AUDCAD 201002 201501 AUDCAD.csv
-php process_dukascopy_data.php AUDCHF 201002 201501 AUDCHF.csv
-php process_dukascopy_data.php CADCHF 201002 201501 CADCHF.csv
-php process_dukascopy_data.php EURNZD 201002 201501 EURNZD.csv
-php process_dukascopy_data.php GBPAUD 201002 201501 GBPAUD.csv
-php process_dukascopy_data.php GBPCAD 201002 201501 GBPCAD.csv
-php process_dukascopy_data.php GBPNZD 201002 201501 GBPNZD.csv
-php process_dukascopy_data.php NZDCAD 201002 201501 NZDCAD.csv
-php process_dukascopy_data.php NZDCHF 201002 201501 NZDCHF.csv
-php process_dukascopy_data.php NZDJPY 201002 201501 NZDJPY.csv
-php process_dukascopy_data.php XAGUSD 201011 201501 XAGUSD.csv
-php process_dukascopy_data.php XAUUSD 201105 201501 XAUUSD.csv
+php -f process.php GBPUSD 2007-03 2021-03 GBPUSD.csv
+php -f process.php USDCAD 2007-03 2021-03 USDCAD.csv
+php -f process.php USDJPY 2007-03 2021-03 USDJPY.csv
+php -f process.php USDCHF 2007-03 2021-03 USDCHF.csv
+php -f process.php EURUSD 2007-03 2021-03 EURUSD.csv
+php -f process.php USDSEK 2008-09 2021-03 USDSEK.csv
+php -f process.php USDNOK 2008-09 2021-03 USDNOK.csv
+php -f process.php NZDUSD 2007-03 2021-03 NZDUSD.csv
+php -f process.php EURSEK 2007-03 2021-03 EURSEK.csv
+php -f process.php EURNOK 2007-03 2021-03 EURNOK.csv
+php -f process.php EURCAD 2008-09 2021-03 EURCAD.csv
+php -f process.php EURAUD 2007-03 2021-03 EURAUD.csv
+php -f process.php CHFJPY 2007-03 2021-03 CHFJPY.csv
+php -f process.php CADJPY 2007-03 2021-03 CADJPY.csv
+php -f process.php AUDUSD 2007-03 2021-03 AUDUSD.csv
+php -f process.php GBPJPY 2007-03 2021-03 GBPJPY.csv
+php -f process.php GBPCHF 2007-03 2021-03 GBPCHF.csv
+php -f process.php EURJPY 2007-03 2021-03 EURJPY.csv
+php -f process.php EURGBP 2007-03 2021-03 EURGBP.csv
+php -f process.php EURCHF 2007-03 2021-03 EURCHF.csv
+php -f process.php AUDNZD 2008-12 2021-03 AUDNZD.csv
+php -f process.php AUDJPY 2007-03 2021-03 AUDJPY.csv
+php -f process.php USDSGD 2008-09 2021-03 USDSGD.csv
+php -f process.php AUDCAD 2010-02 2021-03 AUDCAD.csv
+php -f process.php AUDCHF 2010-02 2021-03 AUDCHF.csv
+php -f process.php CADCHF 2010-02 2021-03 CADCHF.csv
+php -f process.php EURNZD 2010-02 2021-03 EURNZD.csv
+php -f process.php GBPAUD 2010-02 2021-03 GBPAUD.csv
+php -f process.php GBPCAD 2010-02 2021-03 GBPCAD.csv
+php -f process.php GBPNZD 2010-02 2021-03 GBPNZD.csv
+php -f process.php NZDCAD 2010-02 2021-03 NZDCAD.csv
+php -f process.php NZDCHF 2010-02 2021-03 NZDCHF.csv
+php -f process.php NZDJPY 2010-02 2021-03 NZDJPY.csv
+php -f process.php XAGUSD 2010-11 2021-03 XAGUSD.csv
+php -f process.php XAUUSD 2011-05 2021-03 XAUUSD.csv
