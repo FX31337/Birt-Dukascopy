@@ -42,13 +42,6 @@ foreach ($download as $symbol)
         continue;
     }
 
-    if (is_file('.done-' . $symbol))
-    {
-        logger('The symbol ' . $symbol . ' is already full downloaded');
-
-        continue;
-    }
-
     $maxNotFoundFiles     = 100;
     $maxEmptyFiles        = 100;
     $downloadDirectory    = '';
@@ -150,6 +143,13 @@ foreach ($download as $symbol)
         }
         else
         {
+            if (is_file('.done-' . $symbol))
+            {
+                logger('The symbol ' . $symbol . ' is already full downloaded, just downloaded the last new entries');
+
+                break;
+            }
+
             $currentDateTimeToSkip = clone $currentDateTime;
             $currentDateTimeToSkip->modify('-' . min(30, $daysToSkip) . ' day');
             $relativePathToSkip   = getRelativePath($symbol, $currentDateTimeToSkip);
