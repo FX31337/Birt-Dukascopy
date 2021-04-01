@@ -12,7 +12,13 @@ function logger(string $message): void
 
     if (!$logFile)
     {
-        $logFile = __DIR__ . DIRECTORY_SEPARATOR . date('Y-m-d-H-i-s') . '-dukascopy.log';
+        $logFile = implode(DIRECTORY_SEPARATOR, [__DIR__, 'logs', date('Y-m-d-H-i-s') . '-dukascopy.log']);
+
+        if (!file_exists($logFile))
+        {
+            mkdir(dirname($logFile));
+        }
+
         file_put_contents($logFile, "[$timestamp] Script started" . PHP_EOL);
     }
 
@@ -152,8 +158,8 @@ function getTempDir(): string
     if (empty($tempDir))
     {
         $tempDir = tempnam(sys_get_temp_dir(), 'TCK');
-        @unlink($tempDir);
-        @mkdir($tempDir);
+        unlink($tempDir);
+        mkdir($tempDir);
     }
 
     return $tempDir;
