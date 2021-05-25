@@ -64,7 +64,7 @@ foreach ($download as $symbol)
 
             if (!file_exists($downloadDirectory))
             {
-                mkdir($downloadDirectory);
+                mkdir($downloadDirectory, 0777, true);
             }
         }
 
