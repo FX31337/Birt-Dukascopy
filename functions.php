@@ -14,7 +14,7 @@ function logger(string $message): void
     {
         $logFile = implode(DIRECTORY_SEPARATOR, [__DIR__, 'logs', date('Y-m-d-H-i-s') . '-dukascopy.log']);
 
-        if (!file_exists($logFile))
+        if (!file_exists(dirname($logFile)))
         {
             mkdir(dirname($logFile));
         }
