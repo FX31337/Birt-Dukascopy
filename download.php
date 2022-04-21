@@ -48,16 +48,16 @@ foreach ($download as $symbol)
         continue;
     }
 
-    $maxNotFoundFiles     = 100;
-    $maxEmptyFiles        = 100;
-    $downloadDirectory    = '';
-    $notFoundFiles        = 0;
-    $downloadedEmptyFiles = 0;
-    $daysToSkip           = 1;
-    $currentDateTime      = new \DateTime('now', new \DateTimeZone('UTC'));
+    $maxNotFoundFiles  = 100;
+    $maxEmptyFiles     = 100;
+    $downloadDirectory = '';
+    $notFoundFiles     = 0;
+    $emptyFiles        = 0;
+    $daysToSkip        = 1;
+    $currentDateTime   = new \DateTime('now', new \DateTimeZone('UTC'));
     logger('Downloading ' . $symbol . '...');
 
-    while ($maxNotFoundFiles > $notFoundFiles && $maxEmptyFiles > $downloadedEmptyFiles && 1970 < $currentDateTime->format('Y'))
+    while ($maxNotFoundFiles > $notFoundFiles && $maxEmptyFiles > $emptyFiles && 1970 < $currentDateTime->format('Y'))
     {
         $currentDateTime->modify('-1 hour');
         $relativePath   = getRelativePath($symbol, $currentDateTime);
@@ -111,17 +111,17 @@ foreach ($download as $symbol)
             {
                 $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-                switch ($httpCode) 
+                switch ($httpCode)
                 {
                     case 404:
                         $notFoundFiles++;
                         logger($dukascopyUrl . ' Not Found');
-                        
+
                         break;
 
                     case 200:
-                        $notFoundFiles        = 0;
-                        $downloadedEmptyFiles = empty($result) ? $downloadedEmptyFiles + 1 : 0;
+                        $notFoundFiles = 0;
+                        $emptyFiles    = empty($result) ? $emptyFiles + 1 : 0;
 
                         if (saveBinary($fileToDownload, $result))
                         {
