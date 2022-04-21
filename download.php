@@ -3,7 +3,7 @@
 /**
  * Dukascopy downloader (Birt's Tick Data Suite original PHP files)
  *
- * 2021 Updated
+ * 2022 Updated
  *
  * @see LICENSE
  */
