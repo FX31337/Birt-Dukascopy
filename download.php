@@ -13,11 +13,17 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'functions.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'symbols.php';
 
 // Symbols to download, to download all just: $download = $symbols;
+$symbols  = $symbols ?? [];
 $download = [
     'ESPIDXEUR',
     'DEUIDXEUR',
     'AUDUSD',
+    'CHFJPY',
+    'EURCHF',
+    'EURGBP',
+    'EURJPY',
     'EURUSD',
+    'GBPCHF',
     'GBPJPY',
     'GBPUSD',
     'USDCAD',
