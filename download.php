@@ -48,13 +48,23 @@ foreach ($download as $symbol)
         continue;
     }
 
-    $maxNotFoundFiles  = 100;
-    $maxErrorFiles     = 100;
-    $maxEmptyFiles     = 100;
-    $notFoundFiles     = 0;
-    $errorFiles        = 0;
-    $emptyFiles        = 0;
-    $currentDateTime   = new \DateTime('now', new \DateTimeZone('UTC'));
+    $maxNotFoundFiles = 12; // 12 hours without data is enough
+    $maxErrorFiles    = 6;  // 6 retries between 30 seconds es enough
+    $notFoundFiles    = 0;
+    $errorFiles       = 0;
+    $emptyFiles       = 0;
+
+    try
+    {
+        $currentDateTime = new DateTime('now', new DateTimeZone('UTC'));
+    }
+    catch (Exception $e)
+    {
+        logger('Exit with exception: ' . $e->getMessage());
+
+        exit;
+    }
+
     $downloadDirectory = '';
     logger('Downloading ' . $symbol . '...');
 
@@ -70,13 +80,6 @@ foreach ($download as $symbol)
         if ($maxErrorFiles < $errorFiles)
         {
             logger('Too many error files, aborting...');
-
-            break;
-        }
-
-        if ($maxEmptyFiles < $emptyFiles)
-        {
-            logger('Too many empty files, aborting...');
 
             break;
         }
@@ -147,7 +150,6 @@ foreach ($download as $symbol)
                 case 200:
                     $errorFiles    = 0;
                     $notFoundFiles = 0;
-                    $emptyFiles    = empty($result) ? $emptyFiles + 1 : 0;
 
                     if (saveBinary($fileToDownload, $result))
                     {
@@ -168,6 +170,7 @@ foreach ($download as $symbol)
                     logger('Error when downloading ' . $dukascopyUrl);
                     logger('HTTP code was: ' . $httpCode);
                     logger('Content was: ' . $result);
+                    sleep(30);
 
                     break;
             }
